@@ -73,17 +73,38 @@ document.addEventListener('DOMContentLoaded', () => {
         return colors[Math.floor(Math.random() * colors.length)];
     }
 
-    function handleReveal() {
+    async function handleReveal() {
         if (input.value.trim()) {
-            const newAnswer = document.createElement('div');
-            newAnswer.className = 'revealed-answer reveal-animation';
-            newAnswer.textContent = input.value;
-            newAnswer.style.position = 'relative';
-            newAnswer.style.background = getRandomColor();
-            
-            answersContainer.appendChild(newAnswer);
-            createSparkles(newAnswer);
-            input.value = '';
+            try {
+                console.log('Starting save process');
+                const answersRef = ref(db, 'amigas-answers');
+                console.log('Reference created');
+                
+                const newAnswerRef = push(answersRef);
+                console.log('Push reference created');
+                
+                const dataToSave = {
+                    answer: input.value,
+                    timestamp: new Date().toISOString()
+                };
+                console.log('Data prepared:', dataToSave);
+                
+                await set(newAnswerRef, dataToSave);
+                console.log('Data saved successfully');
+
+                const newAnswer = document.createElement('div');
+                newAnswer.className = 'revealed-answer reveal-animation';
+                newAnswer.textContent = input.value;
+                newAnswer.style.position = 'relative';
+                newAnswer.style.background = getRandomColor();
+                
+                answersContainer.appendChild(newAnswer);
+                createSparkles(newAnswer);
+                input.value = '';
+            } catch (error) {
+                console.log('Detailed error:', error.message, error.code);
+                throw error;
+            }
         }
     }
 

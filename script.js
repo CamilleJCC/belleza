@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (input.value.trim()) {
             try {
                 console.log('Starting save process');
-                const answersRef = ref(db, 'amigas-answers');
+                const answersRef = ref(db, 'belleza-answers');
                 console.log('Reference created');
                 
                 const newAnswerRef = push(answersRef);
